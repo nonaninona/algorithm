@@ -9,7 +9,11 @@ while True:
     n = n // k
     ret += 1
   else:
-    n -= 1
-    ret += 1
+    ret += n % k
+    n -= n % k
+# else:
+#   n -= 1
+#   ret += 1
 
 print(ret)
+
