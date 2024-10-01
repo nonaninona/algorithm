@@ -1,0 +1,12 @@
+str = input()
+
+num = -1
+for i in range(len(str)-2):
+  subStr = [str[i], str[i+1], str[i+2]]
+  if str[i] == str[i+1] and str[i+1] == str[i+2] and str[i+2] == str[i]:
+    curNum = int(str[i]+str[i+1]+str[i+2])
+    if num < curNum:
+      num = curNum
+
+print(num)
+
