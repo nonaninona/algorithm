@@ -1,0 +1,28 @@
+N = int(input())
+move = input().split()
+
+x = 1
+y = 1
+dx = [-1, 1, 0, 0]
+dy = [0, 0, -1, 1]
+move_types = ['L', 'R', 'U', 'D']
+
+for m in move:
+  i = -1
+
+  if m == 'L':
+    i = 0
+  elif m == 'R':
+    i = 1
+  elif m == 'U':
+    i = 2
+  elif m == 'D':
+    i = 3
+
+  if 1 <= x + dx[i] <= N and 1 <= y + dy[i] <= N :
+    x = x + dx[i]
+    y = y + dy[i]
+
+
+print(y, x)
+
