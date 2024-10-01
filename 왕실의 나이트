@@ -1,0 +1,14 @@
+input = input()
+inputX = ord(input[0])
+inputY = int(input[1])
+
+count = 0
+dx = [2, 2, -2, -2, -1, 1, -1, 1]
+dy = [1, -1, 1, -1, 2, 2, -2, -2]
+
+for i in range(0, 8):
+  if ord('a') <= inputX + dx[i] <= ord('h') and 1 <= inputY + dy[i] <= 8:
+    count = count + 1
+
+print(count)
+
