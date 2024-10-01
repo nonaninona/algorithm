@@ -1,0 +1,87 @@
+n, m = map(int, input().split())
+y, x, direction = map(int, input().split())
+board = [list(map(int, input().split())) for i in range(0, n)]
+if board[y][x] == '1':
+  print('바다에 빠짐 ㅜㅜ')
+  exit(-1)
+visited = [[0] * m for i in range(n)]
+visited[y][x] = 1
+
+dy = [-1, 0, 1, 0]
+dx = [0, 1, 0, -1]
+
+turnTime = 0
+count = 1
+while True:
+  direction = (direction - 1) % 4
+  turnTime = turnTime + 1
+
+  isOcean = board[y + dy[direction]][x + dx[direction]] == 1
+  isVisited = visited[y + dy[direction]][x + dx[direction]] == 1
+  isInYRange = 0 <= y + dy[direction] <= n - 1
+  isInXRange = 0 <= x + dx[direction] <= m - 1
+  if not isOcean and not isVisited and isInXRange and isInYRange:
+    count = count + 1
+    y = y + dy[direction]
+    x = x + dx[direction]
+    visited[y][x] = 1
+    turnTime = 0
+
+  if turnTime == 4:
+    backDirection = (direction - 2) % 4
+    if board[y + dy[backDirection]][x + dx[backDirection]] == 1:
+      break
+    y = y + dy[backDirection]
+    x = x + dx[backDirection]
+    turnTime = 0
+
+print(count)
+
+# n, m = map(int, input().split())
+# y, x, direction = map(int, input().split())
+# board = [list(map(int, input().split())) for i in range(0, n)]
+# if board[y][x] == '1':
+#   print('바다에 빠짐 ㅜㅜ')
+#   exit(-1)
+
+# visited = [[0 for i in range(0, m)] for j in range(n)]
+# visited[y][x] = 1
+
+# step = [(-1, 0), (0, 1), (1, 0), (0, -1)]
+
+# count = 1
+# while True:
+#   print(y, x)
+#   direction = (direction - 1) % 4
+#   dy = step[direction][0]
+#   dx = step[direction][1]
+
+#   isOcean = board[y+dy][x+dx] == 1
+#   isVisited = visited[y+dy][x+dx] == 1
+#   if not isOcean and not isVisited and 0 <= y+dy <= n-1 and 0 <= x + dx <= m-1:
+#     count = count + 1
+#     y = y+dy
+#     x = x+dx
+#     visited[y][x] = 1
+#   else:
+#     canGo = False
+
+#     for i in range(0, 4):
+#       dy = step[i][0]
+#       dx = step[i][1]
+
+#       if board[y+dy][x+dx] == 0 and visited[y+dy][x+dx] == 0:
+#         canGo = True
+#         break
+
+#     if(not canGo):
+#       backDirection = (direction-2)%4
+#       dy = step[backDirection][0]
+#       dx = step[backDirection][1]
+#       if board[y+dy][x+dx] == 1:
+#         break
+#       y = y + dy
+#       x = x + dx
+
+# print(count)
+
