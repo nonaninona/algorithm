@@ -1,0 +1,66 @@
+n, m = map(int, input().split())
+tray = [list(map(int, input())) for i in range(n)]
+visited = [[0] * m for i in range(n)]
+
+dx = [0, -1, 1, 0]
+dy = [-1, 0, 0, 1]
+
+def dfs(y, x):
+  if y <= -1 or y >= n or x <= -1 or x >= m:
+    return False
+    
+  if tray[y][x] == 0:
+    tray[y][x] = 1
+    for i in range(4):
+      dfs(y+dy[i], x+dx[i])
+    return True
+    
+  return False
+
+count = 0
+for i in range(n):
+  for j in range(m):
+    if dfs(i, j):
+      count += 1
+
+print(count)
+
+# n, m = map(int, input().split())
+
+# tray = [list(map(int, input())) for i in range(n)]
+
+# # tray = []
+# # for i in range(n):
+# #   tray.append(list(map(int, input())))
+  
+# # tray = [list(input().rstrip()) for i in range(n)]
+# visited = [[0] * m for i in range(n)]
+
+# count = 0
+
+# dx = [0, -1, 1, 0]
+# dy = [-1, 0, 0, 1]
+
+# def dfs(y, x, visited, isFirst):
+#   if tray[y][x] == 1:
+#     return
+#   if visited[y][x] == 1:
+#     return
+#   if isFirst:
+#     global count
+#     count = count + 1
+
+#   visited[y][x] = 1
+
+#   for i in range(4):
+#     yHat = y + dy[i]
+#     xHat = x + dx[i]
+#     if 0 <= xHat <= m - 1 and 0 <= yHat <= n - 1 and visited[yHat][xHat] == 0:
+#       dfs(yHat, xHat, visited, False)
+
+# for i in range(0, n):
+#   for j in range(0, m):
+#     dfs(i, j, visited, True)
+
+# print(count)
+
