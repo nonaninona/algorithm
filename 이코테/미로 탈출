@@ -1,0 +1,58 @@
+from collections import deque
+
+n, m = map(int, input().split())
+map = [list(map(int, input())) for i in range(n)]
+
+dy = [-1, 0, 0, 1]
+dx = [0, -1, 1, 0]
+
+def bfs(y, x):
+  queue = deque()
+  queue.append((y, x))
+
+  while queue:
+    (y, x) = queue.popleft()
+
+    for i in range(4):
+      nx = x + dx[i]
+      ny = y + dy[i]
+      if ny < 0 or ny >= n or nx < 0 or nx >= m:
+        continue
+      if map[ny][nx] == 0:
+        continue
+      if map[ny][nx] == 1:
+        map[ny][nx] = map[y][x] + 1
+        queue.append((ny, nx))
+
+  return map[n-1][m-1]
+
+print(bfs(0, 0))
+
+# from collections import deque
+
+# n, m = map(int, input().split())
+# map = [list(map(int, input())) for i in range(n)]
+
+# dy = [-1, 0, 0, 1]
+# dx = [0, -1, 1, 0]
+
+# def bfs():
+#   result = 999999999
+#   queue = deque()
+#   queue.append((0, 0, 1))
+#   map[0][0] = 0
+
+#   while queue:
+#     (y, x, distance) = queue.popleft()
+#     map[y][x] = 0
+#     if y==n-1 and x==m-1 and result > distance:
+#       result = distance
+
+#     for i in range(4):
+#       if 0 <= y+dy[i] <= n-1 and 0 <= x+dx[i] <= m-1 and map[y+dy[i]][x+dx[i]] == 1:
+#         queue.append((y+dy[i], x+dx[i], distance+1))
+    
+
+#   return result
+
+# print(bfs())
