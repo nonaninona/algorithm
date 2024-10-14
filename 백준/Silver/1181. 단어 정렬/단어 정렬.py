@@ -1,8 +1,9 @@
-N = int(input())
+import sys
+N = int(sys.stdin.readline().rstrip())
 words = set()
 for _ in range(N):
-    words.add(input())
+    words.add(sys.stdin.readline().rstrip())
 wordsList = list(words)
 wordsList.sort(key = lambda x : (len(x), x))
 for word in wordsList:
-    print(word)
+    sys.stdout.write(word + "\n")
