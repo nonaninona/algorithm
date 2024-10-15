@@ -1,55 +1,81 @@
-from itertools import combinations
-import sys
+from collections import deque
 
-N, M = map(int, sys.stdin.readline().rstrip().split())
-graph = []
-for _ in range(N):
-    graph.append(list(map(int, sys.stdin.readline().rstrip().split())))
-zeroList = []
+N, M = list(map(int, input().split()))
+grid = [list(map(int, input().split())) for _ in range(N)]
+
+# get coordinates that are not walls nor virus (for comb)
+empty = []
+viruses = []
 for i in range(N):
     for j in range(M):
-        if graph[i][j] == 0:
-            zeroList.append((i, j))
-visited = [[False for _ in range(M)] for __ in range(N)]
-dx = [0, 1, 0, -1]
-dy = [1, 0, -1, 0]
+        if grid[i][j] == 0:
+            empty.append((i, j))
+        if grid[i][j] == 2:
+            viruses.append((i, j))
 
-def dfs(y, x):
-    if y < 0 or x < 0 or y >= N or x >= M:
-        return (False, 0)
-    if visited[y][x]:
-        return (False, 0)
-    if graph[y][x] == 1:
-        return (False, 0)
-    if graph[y][x] == 2:
-        return (True, 0)
+# get empty Comb 3
+k = 3
+visited = [False for _ in range(len(empty))]
+def combination(idx, arr, out):
+    if len(arr) == k:
+        out.append(arr)
+        return
 
-    visited[y][x] = True
+    for i in range(idx+1, len(empty)):
+        if visited[i] == False:
+            visited[i] = True
+            combination(i, arr + [empty[i]], out)
+            visited[i] = False
 
-    isTwoExist = False
-    childWidth = 0
-    for i in range(4):
-        (iTE, width) = dfs(y+dy[i], x+dx[i])
-        isTwoExist = isTwoExist or iTE
-        childWidth += width
-    return (isTwoExist, childWidth+1)
+wall_comb = []
+combination(-1, [], wall_comb)
 
-maxWidth = -1
-combinations = list(combinations(zeroList, 3))
-for comb in combinations:
-    for (y, x) in comb:
-        graph[y][x] = 1
+# fill in the walls
+def fill_walls(walls, original_grid):
+    new_grid = [row[:] for row in original_grid]
+    for wall in walls:
+        wy, wx = wall
+        new_grid[wy][wx] = 1
+    return new_grid
+
+# spread virus
+def speard_virus(original_grid, viruses):
+    dx = [1, 0, -1, 0]
+    dy = [0, 1, 0, -1]
+    new_grid = [row[:] for row in original_grid]
+    visited = [[False for _ in range(M)] for _ in range(N)]
+    def bfs(y, x):
+        queue = deque()
+        queue.append((y, x))
+        visited[y][x] = True
+        while queue:
+            cy, cx = queue.popleft()
+            for i in range(4):
+                ny, nx = cy + dy[i], cx + dx[i]
+                if 0 <= ny < N and 0 <= nx < M and visited[ny][nx] == False and new_grid[ny][nx] == 0:
+                    queue.append((ny, nx))
+                    visited[ny][nx] = True
+                    new_grid[ny][nx] = 2
+
+    for virus in viruses:
+        vy, vx = virus
+        bfs(vy, vx)
+    return new_grid
+
+# count the number of 0s
+def count_zeros(grid):
+    cnt = 0
     for i in range(N):
         for j in range(M):
-            visited[i][j] = False
-    safeWidth = 0
-    for i in range(N):
-        for j in range(M):
-            (isTwoExist, width) = dfs(i, j)
-            if not isTwoExist:
-                safeWidth += width
-    if safeWidth > maxWidth:
-        maxWidth = safeWidth
-    for (y, x) in comb:
-        graph[y][x] = 0
-print(maxWidth)
+            if grid[i][j] == 0:
+                cnt += 1
+    return cnt
+
+max_area = 0
+for each_wall in wall_comb:
+    filled_grid = fill_walls(each_wall, grid)
+    final_grid = speard_virus(filled_grid, viruses)
+    area = count_zeros(final_grid)
+    max_area = max(max_area, area)
+
+print(max_area)
