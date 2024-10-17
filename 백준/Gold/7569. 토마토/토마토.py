@@ -14,19 +14,20 @@ for k in range(H):
     for i in range(N):
         for j in range(M):
             if boxes[k][i][j] == 1:
-                queue.append((k, i, j, 1))
-                boxes[k][i][j] = 0
+                queue.append((k, i, j))
 
 while queue:
-    (z, y, x, d) = queue.popleft()
-    if z < 0 or z >= H or y < 0 or y >= N or x < 0 or x >= M:
-        continue
-    if boxes[z][y][x] != 0:
-        continue
-
-    boxes[z][y][x] = d
+    (z, y, x) = queue.popleft()
     for i in range(6):
-        queue.append((z+dz[i], y+dy[i], x+dx[i], d+1))
+        nz = z+dz[i]
+        ny = y+dy[i]
+        nx = x+dx[i]
+        if nz < 0 or nz >= H or ny < 0 or ny >= N or nx < 0 or nx >= M:
+            continue
+        if boxes[nz][ny][nx] != 0:
+            continue
+        boxes[nz][ny][nx] = boxes[z][y][x] + 1
+        queue.append((nz, ny, nx))
 
 maximum = -1
 for k in range(H):
