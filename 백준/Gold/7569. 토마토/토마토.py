@@ -1,42 +1,40 @@
 from collections import deque
-import sys
+que = deque()
 
-M, N, H = map(int, sys.stdin.readline().rstrip().split())
+M,N,H = map(int, input().split())
+tomatos = [[list(map(int, input().split())) for _ in range(N)] for _ in range(H)]
+dZ = [1,-1,0,0,0,0]
+dX = [0,0,0,1,0,-1]
+dY = [0,0,1,0,-1,0]
 
-boxes = [[list(map(int, sys.stdin.readline().rstrip().split())) for i in range(N)] for j in range(H)]
-queue = deque()
+def bfs():
+    while que:
+        z,x,y = que.popleft()
+        for dz, dx, dy in zip(dZ, dX, dY):
+            nz, nx, ny = z+dz, x+dx, y+dy
+            if 0<=nz<H and 0<=nx<N and 0<=ny<M:
+                if tomatos[nz][nx][ny]==0:
+                    tomatos[nz][nx][ny] = tomatos[z][x][y] + 1
+                    que.append((nz,nx,ny))
 
-dx = [-1, 0, 1, 0, 0, 0]
-dy = [0, 1, 0, -1, 0, 0]
-dz = [0, 0, 0, 0, 1, -1]
+for i in range(H):
+    for j in range(N):
+        for k in range(M):
+            if tomatos[i][j][k] == 1:
+                que.append((i,j,k))
 
-for k in range(H):
-    for i in range(N):
-        for j in range(M):
-            if boxes[k][i][j] == 1:
-                queue.append((k, i, j))
+bfs()
 
-while queue:
-    (z, y, x) = queue.popleft()
-    for i in range(6):
-        nz = z+dz[i]
-        ny = y+dy[i]
-        nx = x+dx[i]
-        if nz < 0 or nz >= H or ny < 0 or ny >= N or nx < 0 or nx >= M:
-            continue
-        if boxes[nz][ny][nx] != 0:
-            continue
-        boxes[nz][ny][nx] = boxes[z][y][x] + 1
-        queue.append((nz, ny, nx))
-
-maximum = -1
-for k in range(H):
-    for i in range(N):
-        for j in range(M):
-            t = boxes[k][i][j]
-            if t == 0:
-                print(-1)
-                exit(0)
-            if t != -1 and t > maximum:
-                maximum = t
-print(maximum-1)
+res, trigger = 0, 0
+for i in range(H):
+    for j in range(N):
+        row = tomatos[i][j]
+        if 0 in row:
+            trigger = 1
+        else:
+            res = max(res, max(row))
+if trigger:
+    res = -1
+else:
+    res -= 1
+print(res)
