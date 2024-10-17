@@ -1,5 +1,5 @@
 import sys
-s = set()
+s = [False for i in range(21)]
 M = int(sys.stdin.readline().rstrip())
 
 def isInSet(number):
@@ -13,23 +13,20 @@ def isInSet(number):
 for _ in range(M):
     userInput = sys.stdin.readline().rstrip().split()
     if userInput[0] == "add":
-        s.add(int(userInput[1]))
+        s[int(userInput[1])] = True
     elif userInput[0] == "remove":
-        s.discard(int(userInput[1]))
+        s[int(userInput[1])] = False
     elif userInput[0] == "check":
-        isExist = isInSet(int(userInput[1]))
+        isExist = s[int(userInput[1])]
         if isExist:
             print(1)
         else:
             print(0)
     elif userInput[0] == "toggle":
-        isExist = isInSet(int(userInput[1]))
-        if not isExist:
-            s.add(int(userInput[1]))
-        else:
-            s.discard(int(userInput[1]))
+        s[int(userInput[1])] = not s[int(userInput[1])]
     elif userInput[0] == "all":
-        for i in range(1, 21):
-            s.add(i)
+        for i in range(len(s)):
+            s[i] = True
     elif userInput[0] == "empty":
-        s.clear()
+        for i in range(len(s)):
+            s[i] = False
