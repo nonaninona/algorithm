@@ -1,40 +1,35 @@
 from collections import deque
-que = deque()
+import sys
 
-M,N,H = map(int, input().split())
-tomatos = [[list(map(int, input().split())) for _ in range(N)] for _ in range(H)]
-dZ = [1,-1,0,0,0,0]
-dX = [0,0,0,1,0,-1]
-dY = [0,0,1,0,-1,0]
+M, N, H = map(int, sys.stdin.readline().rstrip().split())
+boxes = [[list(map(int, sys.stdin.readline().rstrip().split())) for i in range(N)] for j in range(H)]
+queue = deque()
+dX = [-1, 0, 1, 0, 0, 0]
+dY = [0, 1, 0, -1, 0, 0]
+dZ = [0, 0, 0, 0, 1, -1]
 
+for k in range(H):
+    for i in range(N):
+        for j in range(M):
+            if boxes[k][i][j] == 1:
+                queue.append((k, i, j))
 def bfs():
-    while que:
-        z,x,y = que.popleft()
-        for dz, dx, dy in zip(dZ, dX, dY):
-            nz, nx, ny = z+dz, x+dx, y+dy
-            if 0<=nz<H and 0<=nx<N and 0<=ny<M:
-                if tomatos[nz][nx][ny]==0:
-                    tomatos[nz][nx][ny] = tomatos[z][x][y] + 1
-                    que.append((nz,nx,ny))
-
-for i in range(H):
-    for j in range(N):
-        for k in range(M):
-            if tomatos[i][j][k] == 1:
-                que.append((i,j,k))
-
+    while queue:
+        (z, y, x) = queue.popleft()
+        for dx, dy, dz in zip(dX, dY, dZ):
+            nz, ny, nx = z+dz, y+dy, x+dx
+            if 0 <= nz < H and 0 <= ny < N and 0 <= nx < M:
+                if boxes[nz][ny][nx] == 0:
+                    boxes[nz][ny][nx] = boxes[z][y][x] + 1
+                    queue.append((nz, ny, nx))
 bfs()
 
-res, trigger = 0, 0
-for i in range(H):
-    for j in range(N):
-        row = tomatos[i][j]
+maximum = -1
+for k in range(H):
+    for i in range(N):
+        row = boxes[k][i]
         if 0 in row:
-            trigger = 1
-        else:
-            res = max(res, max(row))
-if trigger:
-    res = -1
-else:
-    res -= 1
-print(res)
+            print(-1)
+            exit(0)
+        maximum = max(max(row), maximum)
+print(maximum-1)
