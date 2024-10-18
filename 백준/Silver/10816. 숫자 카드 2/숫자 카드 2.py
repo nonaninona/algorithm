@@ -1,7 +1,8 @@
-N = int(input())
-cards = list(map(int, input().split()))
-M = int(input())
-originalFinds = list(map(int, input().split()))
+import sys
+N = int(sys.stdin.readline().rstrip())
+cards = list(map(int, sys.stdin.readline().rstrip().split()))
+M = int(sys.stdin.readline().rstrip())
+originalFinds = list(map(int, sys.stdin.readline().rstrip().split()))
 finds = originalFinds[:]
 counts = {}
 for f in finds:
@@ -21,4 +22,4 @@ for i in range(len(finds)):
             break
         j+=1
 for o in originalFinds:
-    print(counts[o], end=" ")
+    sys.stdout.write(str(counts[o]) + " ")
