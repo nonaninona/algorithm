@@ -3,17 +3,26 @@ N = int(sys.stdin.readline().rstrip())
 cards = list(map(int, sys.stdin.readline().rstrip().split()))
 M = int(sys.stdin.readline().rstrip())
 finds = list(map(int, sys.stdin.readline().rstrip().split()))
+findsTuple = []
+for i in range(len(finds)):
+    findsTuple.append((finds[i], i))
 cards.sort()
+findsTuple.sort()
+ans = [0] * M
 
-def binarySearch(n, start, end):
-    if start > end:
-        return 0
-    mid = (start+end)//2
-    if cards[mid] == n:
-        return 1
-    elif cards[mid] > n:
-        return binarySearch(n, start, mid-1)
-    else:
-        return binarySearch(n, mid+1, end)
-for f in finds:
-    print(binarySearch(f, 0, N-1), end=" ")
+i, j = 0, 0
+while True:
+    if i == M or j == N:
+        break
+    f, num = findsTuple[i]
+    c = cards[j]
+    if f == c:
+        ans[num] = 1
+        i+=1
+    elif f < c:
+        i+=1
+        continue
+    j+=1
+
+for a in ans:
+    print(a, end=" ")
