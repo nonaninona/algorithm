@@ -64,5 +64,7 @@ def checkEnd(groups):
     return True
 ```
 
+![image](https://github.com/user-attachments/assets/487e9881-6014-4e6c-8928-cfe008bc7150)
+![image](https://github.com/user-attachments/assets/e90daad9-a38e-41ba-8bb1-9e4880246b0f)
 
 # 다른 사람 답 참고
