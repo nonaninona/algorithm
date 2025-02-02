@@ -1,10 +1,13 @@
-N, M = map(int, input().split())
-A = list(map(int, input().split()))
+import heapq, sys
+N, M = map(int, sys.stdin.readline().rstrip().split())
+A = list(map(int, sys.stdin.readline().rstrip().split()))
+
+heapq.heapify(A)
 
 for i in range(M):
-    A.sort()
-    A.append(A[0] + A[1])
-    A.append(A[0] + A[1])
-    A = A[2:]
+    a = heapq.heappop(A)
+    b = heapq.heappop(A)
+    heapq.heappush(A, a+b)
+    heapq.heappush(A, a+b)
 
 print(sum(A))
