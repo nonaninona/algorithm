@@ -24,5 +24,5 @@ nlogn이면 생각해볼 목록에 parametric search도 추가하도록 하자
 
 
 # 다른 사람 답 참고
-[짜잔 parametric search였답니다~](https://velog.io/@estelle17/%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%A8%B8%EC%8A%A4-%EB%AC%B8%EC%A0%9C-%EC%84%A0%EC%9E%85-%EC%84%A0%EC%B6%9C-%EC%8A%A4%EC%BC%80%EC%A4%84%EB%A7%81)<br>
+[짜잔 parametric search였답니다~](https://velog.io/@longroadhome/%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%A8%B8%EC%8A%A4-LV.4-%EC%84%A0%EC%9E%85-%EC%84%A0%EC%B6%9C-%EC%8A%A4%EC%BC%80%EC%A4%84%EB%A7%81-JS)<br>
 [이분탐색 또 까먹었니?](https://www.acmicpc.net/blog/view/109)
