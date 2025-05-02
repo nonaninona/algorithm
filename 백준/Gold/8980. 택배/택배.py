@@ -17,10 +17,15 @@ def solve(N, C, infos):
 
         # 짐 싣기
         cur_volume = 0
+        is_end = False
         for j in range(i, N):
+            if is_end:
+                truck[j] = 0
+                continue
             if cur_volume + cur_info[j] > C:
                 truck[j] = C - cur_volume
-                break
+                is_end = True
+                continue
             truck[j] = cur_info[j]
             cur_volume += truck[j]
 
