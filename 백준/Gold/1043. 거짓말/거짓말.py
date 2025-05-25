@@ -1,36 +1,40 @@
-from collections import deque
-
 N, M = map(int, input().split())
-truth = list(map(int, input().split()))[1:]
-g = [[] for i in range(N+M)]
-visited = [False] * (N+M)
-for i in range(M):
-    people = list(map(int, input().split()))[1:]
-    for p in people:
-        g[i+N].append(p-1)
-        g[p-1].append(i+N)
+groups = [i for i in range(N)]
+truth = list(map(lambda x : x-1, map(int, input().split())))[1:]
+parties = [list(map(lambda x: x-1, map(int, input().split())))[1:] for i in range(M)]
+
+def find(i):
+    if groups[i] != i:
+        groups[i] = find(groups[i])
+    return groups[i]
+
+def union(a, b):
+    a = find(a)
+    b = find(b)
+
+    if a in truth and b not in truth:
+        groups[b] = a
+        return
+    if b in truth and a not in truth:
+        groups[a] = b
+        return
+
+    if a <= b:
+        groups[b] = a
+    else:
+        groups[a] = b
+
+for people in parties:
+    for i in range(len(people)-1):
+        union(people[i], people[i+1])
 
 def solve():
-    queue = deque()
-
-    for t in truth:
-        queue.append(t-1)
-        visited[t-1] = True
-
-
-    while queue:
-        n = queue.popleft()
-
-        for e in g[n]:
-            if visited[e]:
-                continue
-            visited[e] = True
-            queue.append(e)
-
-    ret = 0
-    for i in range(N, N+M):
-        if not visited[i]:
-            ret +=1
+    ret = M
+    for people in parties:
+        for p in people:
+            if find(p) in truth:
+                ret -= 1
+                break
     return ret
 
 
