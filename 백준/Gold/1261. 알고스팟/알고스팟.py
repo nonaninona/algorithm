@@ -1,22 +1,26 @@
-from collections import deque
+import heapq
 
 M, N = map(int, input().split())
 board = [list(map(int, list(input()))) for i in range(N)]
-visited = [[2100000000] * M for i in range(N)]
+
 
 Dy = [0, 1, 0, -1]
 Dx = [1, 0, -1, 0]
 
 def solve():
-    queue = deque()
+    q = []
+    heapq.heapify(q)
+    dist = [[2100000000] * M for i in range(N)]
 
-    queue.append((0, 0, 0))
-    visited[0][0] = 0
+    heapq.heappush(q, (0, 0, 0))
+    dist[0][0] = 0
 
-    while queue:
-        y, x, count = queue.popleft()
+    while q:
+        d, y, x = heapq.heappop(q)
+        if y == N-1 and x == M-1:
+            return d
 
-        if visited[y][x] < count:
+        if dist[y][x] < d:
             continue
 
         for dy, dx in zip(Dy, Dx):
@@ -24,17 +28,15 @@ def solve():
             if ny < 0 or nx < 0 or ny >= N or nx >= M:
                 continue
 
-            new_count = count
+            new_dist = d
             if board[ny][nx] == 1:
-                new_count += 1
+                new_dist += 1
 
-            if visited[ny][nx] <= new_count:
+            if dist[ny][nx] <= new_dist:
                 continue
 
-            queue.append((ny, nx, new_count))
-            visited[ny][nx] = new_count
-
-    return visited[N-1][M-1]
+            heapq.heappush(q, (new_dist, ny, nx))
+            dist[ny][nx] = new_dist
 
 ans = solve()
 print(ans)
