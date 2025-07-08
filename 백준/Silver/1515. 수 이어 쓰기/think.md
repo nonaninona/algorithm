@@ -1,0 +1,3 @@
+# 배운점
+- 문자열은 length, Collection은 size
+- String 특정 문자 참조는 참조연산자로 못하고 charAt...
