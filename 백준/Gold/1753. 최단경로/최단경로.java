@@ -1,69 +1,67 @@
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.*;
 
 public class Main {
 
-    public static void main(String args[]) throws Exception {
+    static int[] dist;
+    static int V, E, K;
+    static List<List<int[]>> graph;
+    static PriorityQueue<int[]> queue;
+
+    public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st = new StringTokenizer(br.readLine());
-        int V = Integer.parseInt(st.nextToken());
-        int E = Integer.parseInt(st.nextToken());
-        int K = Integer.parseInt(br.readLine()) - 1;
+        StringTokenizer st= new StringTokenizer(br.readLine());
 
-        List<List<List<Integer>>> g = new ArrayList<>();
-        for (int i = 0; i < V; i++) {
-            g.add(new ArrayList<>());
+        V = Integer.parseInt(st.nextToken());
+        E = Integer.parseInt(st.nextToken());
+        K = Integer.parseInt(br.readLine()) - 1;
+
+        graph = new ArrayList<>();
+        for(int i=0;i<V;i++) {
+            graph.add(new ArrayList<>());
         }
-
-        for (int i = 0; i < E; i++) {
+        for(int i=0;i<E;i++) {
             st = new StringTokenizer(br.readLine());
-            int s = Integer.parseInt(st.nextToken()) - 1;
-            int e = Integer.parseInt(st.nextToken()) - 1;
+
+            int u = Integer.parseInt(st.nextToken());
+            int v = Integer.parseInt(st.nextToken());
             int w = Integer.parseInt(st.nextToken());
 
-            g.get(s).add(List.of(e, w));
-            ;
-
+            graph.get(u-1).add(new int[] {v-1, w});
         }
 
-        // priority queue => 의미가 있는 정점을 넣는 것
-        // queue에서 꺼내서 주변 노드 확인해서 그 노드 통해서 도달 거리가 더 가까우면 갱신 + 큐에 넣기
-        PriorityQueue<int[]> q = new PriorityQueue<>(Comparator.comparing(a -> a[0]));
+        dist = new int[V];
+        for(int i=0;i<V;i++)
+            dist[i] = Integer.MAX_VALUE;
+        queue = new PriorityQueue<>(Comparator.comparingInt(l -> l[1]));
+        queue.offer(new int[]{K, 0});
+        dist[K] = 0;
+        while(!queue.isEmpty()) {
+            int[] node = queue.poll();
+            int v = node[0];
+            int w = node[1];
 
-        int[] d = new int[V];
-        for (int i = 0; i < V; i++) {
-            d[i] = Integer.MAX_VALUE;
-        }
-        d[K] = 0;
-
-        q.add(new int[]{d[K], K});
-
-        while(!q.isEmpty()) {
-            int[] tuple = q.poll();
-            int dist = tuple[0];
-            int n = tuple[1];
-
-            if(d[n] < dist)
+            if(dist[v] < w)
                 continue;
 
-            for(List<Integer> t : g.get(n)) {
-                int e = t.get(0);
-                int w = t.get(1);
+            List<int[]> edges = graph.get(v);
+            for(int[] edge : edges) {
+                int nV = edge[0];
+                int nW = edge[1];
 
-                if(d[e] <= w+dist)
-                    continue;
-
-                d[e] = w+dist;
-                q.add(new int[]{w+dist, e});
+                if (w + nW < dist[nV]) {
+                    dist[nV] = w + nW;
+                    queue.offer(new int[]{nV, dist[nV]});
+                }
             }
         }
 
-        for (int i = 0; i < V; i++) {
-            if(d[i] == Integer.MAX_VALUE)
+        for(int i=0;i<V;i++) {
+            if(dist[i] == Integer.MAX_VALUE)
                 System.out.println("INF");
             else
-                System.out.println(d[i]);
+                System.out.println(dist[i]);
         }
     }
+
 }
