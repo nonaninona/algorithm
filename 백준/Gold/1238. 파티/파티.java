@@ -1,78 +1,96 @@
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.*;
 
 public class Main {
 
+    static int[] dist;
+    static int[] distX;
     static int N, M, X;
-    static List<List<List<Integer>>> graph = new ArrayList<>();
+    static List<List<int[]>> graph;
+    static PriorityQueue<int[]> queue;
 
-    public static void main(String args[]) throws Exception {
+    public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
 
         N = Integer.parseInt(st.nextToken());
         M = Integer.parseInt(st.nextToken());
-        X = Integer.parseInt(st.nextToken()) - 1;
+        X = Integer.parseInt(st.nextToken())-1;
 
-        for(int i=0;i<N;i++)
+        graph = new ArrayList<>();
+        for(int i=0;i<N;i++) {
             graph.add(new ArrayList<>());
-        for(int i=0;i<M;i++) {
+        }
+
+        for (int i = 0; i < M; i++) {
             st = new StringTokenizer(br.readLine());
-            int s = Integer.parseInt(st.nextToken());
-            int e = Integer.parseInt(st.nextToken());
+
+            int u = Integer.parseInt(st.nextToken())-1;
+            int v = Integer.parseInt(st.nextToken())-1;
             int w = Integer.parseInt(st.nextToken());
 
-            graph.get(s-1).add(List.of(w, e-1));
+            graph.get(u).add(new int[] {v, w});
         }
 
-        int ret = Integer.MIN_VALUE;
-        for(int i=0;i<N;i++) {
-            int distance = dijkstra(i, X) + dijkstra(X, i);
-            ret = Math.max(ret, distance);
-        }
+        queue = new PriorityQueue<>(Comparator.comparingInt(l -> l[1]));
+        queue.offer(new int[]{X, 0});
+        distX = new int[N];
+        Arrays.fill(distX, Integer.MAX_VALUE);
+        distX[X] = 0;
+        while(!queue.isEmpty()) {
+            int[] node = queue.poll();
+            int v = node[0];
+            int w = node[1];
 
-        System.out.println(ret);
-    }
-
-    static int[] dist;
-
-    private static int dijkstra(int start, int end) {
-        if(start == end)
-            return 0;
-
-        dist = new int[N];
-        for(int i=0;i<N;i++)
-            dist[i] = Integer.MAX_VALUE;
-
-        PriorityQueue<List<Integer>> q = new PriorityQueue<List<Integer>>(
-                Comparator.comparingInt(list -> list.get(0))
-        );
-        q.offer(List.of(0, start));
-        dist[start] = 0;
-
-        while(!q.isEmpty()) {
-            List<Integer> e = q.poll();
-            int distance = e.get(0);
-            int target = e.get(1);
-
-            if(dist[target] < distance)
+            if(distX[v] < w)
                 continue;
 
-            List<List<Integer>> edges = graph.get(target);
-            for(List<Integer> edge : edges) {
-                int nextDistance = edge.get(0);
-                int nextTarget = edge.get(1);
+            List<int[]> edges = graph.get(v);
+            for(int[] edge: edges) {
+                int nV = edge[0];
+                int nW = edge[1];
 
-                if(distance + nextDistance < dist[nextTarget]) {
-                    dist[nextTarget] = distance + nextDistance;
-                    q.offer(List.of(dist[nextTarget], nextTarget));
+                if(w + nW < distX[nV]) {
+                    distX[nV] = w + nW;
+                    queue.offer(new int[]{nV, distX[nV]});
                 }
             }
         }
 
-        return dist[end];
+
+        int ret = Integer.MIN_VALUE;
+        for(int i=0;i<N;i++) {
+            if(i==X)
+                continue;
+            queue = new PriorityQueue<>(Comparator.comparingInt(l -> l[1]));
+            queue.offer(new int[]{i, 0});
+            dist = new int[N];
+            Arrays.fill(dist, Integer.MAX_VALUE);
+            dist[i] = 0;
+            while(!queue.isEmpty()) {
+                int[] node = queue.poll();
+                int v = node[0];
+                int w = node[1];
+
+                if(dist[v] < w)
+                    continue;
+
+                List<int[]> edges = graph.get(v);
+                for(int[] edge: edges) {
+                    int nV = edge[0];
+                    int nW = edge[1];
+
+                    if(w + nW < dist[nV]) {
+                        dist[nV] = w + nW;
+                        queue.offer(new int[]{nV, dist[nV]});
+                    }
+                }
+            }
+
+//            System.out.println(Arrays.toString(dist));
+            ret = Math.max(ret, dist[X]+distX[i]);
+        }
+
+        System.out.println(ret);
     }
-
 }
-
