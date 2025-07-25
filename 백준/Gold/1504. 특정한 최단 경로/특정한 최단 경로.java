@@ -17,15 +17,15 @@ public class Main {
         E = Integer.parseInt(st.nextToken());
 
         graph = new ArrayList<>();
-        for(int i=0;i<N;i++) {
+        for (int i = 0; i < N; i++) {
             graph.add(new ArrayList<>());
         }
 
         for (int i = 0; i < E; i++) {
             st = new StringTokenizer(br.readLine());
 
-            int a = Integer.parseInt(st.nextToken())-1;
-            int b = Integer.parseInt(st.nextToken())-1;
+            int a = Integer.parseInt(st.nextToken()) - 1;
+            int b = Integer.parseInt(st.nextToken()) - 1;
             int c = Integer.parseInt(st.nextToken());
 
             graph.get(a).add(new int[]{b, c});
@@ -33,57 +33,35 @@ public class Main {
         }
 
         st = new StringTokenizer(br.readLine());
-        v1 = Integer.parseInt(st.nextToken())-1;
-        v2 = Integer.parseInt(st.nextToken())-1;
+        v1 = Integer.parseInt(st.nextToken()) - 1;
+        v2 = Integer.parseInt(st.nextToken()) - 1;
 
-        int ret1 = getRet1();
-        int ret2 = getRet2();
+        dijkstra(0);
+        int zeroToV1 = dist[v1];
+        int zeroToV2 = dist[v2];
 
-        int ret = Math.min(ret1, ret2);
-        if(ret == Integer.MAX_VALUE)
+        dijkstra(v1);
+        int v1ToV2 = dist[v2];
+        int v1ToEnd = dist[N - 1];
+
+        dijkstra(v2);
+        int v2ToV1 = dist[v1];
+        int v2ToEnd = dist[N - 1];
+
+        int[] dists = {zeroToV1, zeroToV2, v1ToV2, v1ToEnd, v2ToV1, v2ToEnd};
+        boolean isFailed = false;
+        for (int d : dists) {
+            if (d == Integer.MAX_VALUE) {
+                isFailed = true;
+                break;
+            }
+        }
+
+        if (isFailed) {
             System.out.println(-1);
-        else
-            System.out.println(ret);
-    }
-
-    private static int getRet2() {
-        int ret2 = 0;
-        dijkstra(0);
-        if(dist[v2] == Integer.MAX_VALUE)
-            return Integer.MAX_VALUE;
-        ret2 += dist[v2];
-
-        dijkstra(v2);
-        if(dist[v1] == Integer.MAX_VALUE)
-            return Integer.MAX_VALUE;
-        ret2 += dist[v1];
-
-        dijkstra(v1);
-        if(dist[N-1] == Integer.MAX_VALUE)
-            return Integer.MAX_VALUE;
-        ret2 += dist[N-1];
-
-        return ret2;
-    }
-
-    private static int getRet1() {
-        int ret1 = 0;
-        dijkstra(0);
-        if(dist[v1] == Integer.MAX_VALUE)
-            return Integer.MAX_VALUE;
-        ret1 += dist[v1];
-
-        dijkstra(v1);
-        if(dist[v2] == Integer.MAX_VALUE)
-            return Integer.MAX_VALUE;
-        ret1 += dist[v2];
-
-        dijkstra(v2);
-        if(dist[N-1] == Integer.MAX_VALUE)
-            return Integer.MAX_VALUE;
-        ret1 += dist[N-1];
-
-        return ret1;
+        } else {
+            System.out.println(Math.min((long) zeroToV1 + v1ToV2 + v2ToEnd, (long) zeroToV2 + v2ToV1 + v1ToEnd));
+        }
     }
 
     private static void dijkstra(int start){
