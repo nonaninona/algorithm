@@ -1,101 +1,116 @@
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.*;
 
 public class Main {
 
-    static int N;
-    static int E;
-    static List<List<List<Integer>>> graph = new ArrayList<>();
+    static int N, E;
     static int v1, v2;
+    static List<List<int[]>> graph;
+    static PriorityQueue<int[]> queue;
+    static int[] dist;
 
-    public static void main(String args[]) throws Exception {
+    public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
 
         N = Integer.parseInt(st.nextToken());
         E = Integer.parseInt(st.nextToken());
 
-        for (int i = 0; i < N; i++)
+        graph = new ArrayList<>();
+        for(int i=0;i<N;i++) {
             graph.add(new ArrayList<>());
+        }
+
         for (int i = 0; i < E; i++) {
             st = new StringTokenizer(br.readLine());
-            int a = Integer.parseInt(st.nextToken());
-            int b = Integer.parseInt(st.nextToken());
+
+            int a = Integer.parseInt(st.nextToken())-1;
+            int b = Integer.parseInt(st.nextToken())-1;
             int c = Integer.parseInt(st.nextToken());
 
-            graph.get(a - 1).add(List.of(c, b - 1));
-            graph.get(b - 1).add(List.of(c, a - 1));
+            graph.get(a).add(new int[]{b, c});
+            graph.get(b).add(new int[]{a, c});
         }
 
         st = new StringTokenizer(br.readLine());
-        v1 = Integer.parseInt(st.nextToken()) - 1;
-        v2 = Integer.parseInt(st.nextToken()) - 1;
+        v1 = Integer.parseInt(st.nextToken())-1;
+        v2 = Integer.parseInt(st.nextToken())-1;
 
-//        System.out.println(graph);
-//        System.out.println(v1 + " " + v2);
+        int ret1 = getRet1();
+        int ret2 = getRet2();
 
-
-        int[] firstRoute = {0, v1, v2, N - 1};
-        int[] secondRoute = {0, v2, v1, N - 1};
-
-        int first = calc(firstRoute);
-        int second = calc(secondRoute);
-
-        if (first == -1 || second == -1)
+        int ret = Math.min(ret1, ret2);
+        if(ret == Integer.MAX_VALUE)
             System.out.println(-1);
         else
-            System.out.println(Math.min(first, second));
+            System.out.println(ret);
     }
 
-    static int[] dist;
+    private static int getRet2() {
+        int ret2 = 0;
+        dijkstra(0);
+        if(dist[v2] == Integer.MAX_VALUE)
+            return Integer.MAX_VALUE;
+        ret2 += dist[v2];
 
-    private static int calc(int[] route) {
-        int ret = 0;
-        for (int i = 0; i < 3; i++) {
-            int distance = dijkstra(route[i], route[i + 1]);
-            if (distance == Integer.MAX_VALUE) {
-                return -1;
-            }
-            ret += distance;
-        }
-        return ret;
+        dijkstra(v2);
+        if(dist[v1] == Integer.MAX_VALUE)
+            return Integer.MAX_VALUE;
+        ret2 += dist[v1];
+
+        dijkstra(v1);
+        if(dist[N-1] == Integer.MAX_VALUE)
+            return Integer.MAX_VALUE;
+        ret2 += dist[N-1];
+
+        return ret2;
     }
 
-    private static int dijkstra(int start, int end) {
+    private static int getRet1() {
+        int ret1 = 0;
+        dijkstra(0);
+        if(dist[v1] == Integer.MAX_VALUE)
+            return Integer.MAX_VALUE;
+        ret1 += dist[v1];
+
+        dijkstra(v1);
+        if(dist[v2] == Integer.MAX_VALUE)
+            return Integer.MAX_VALUE;
+        ret1 += dist[v2];
+
+        dijkstra(v2);
+        if(dist[N-1] == Integer.MAX_VALUE)
+            return Integer.MAX_VALUE;
+        ret1 += dist[N-1];
+
+        return ret1;
+    }
+
+    private static void dijkstra(int start){
         dist = new int[N];
-        for (int i = 0; i < N; i++)
-            dist[i] = Integer.MAX_VALUE;
+        Arrays.fill(dist, Integer.MAX_VALUE);
+        queue = new PriorityQueue<>(Comparator.comparingInt(l -> l[1]));
 
-        PriorityQueue<List<Integer>> q = new PriorityQueue<>(
-                Comparator.comparingInt(list -> list.get(0))
-        );
-
-        q.offer(List.of(0, start));
+        queue.offer(new int[]{start, 0});
         dist[start] = 0;
+        while(!queue.isEmpty()) {
+            int[] node = queue.poll();
+            int b = node[0];
+            int c = node[1];
 
-        while (!q.isEmpty()) {
-            List<Integer> node = q.poll();
-            int distance = node.get(0);
-            int target = node.get(1);
-
-            if (dist[target] < distance)
+            if(dist[b] < c)
                 continue;
 
-            List<List<Integer>> edges = graph.get(target);
-            for (List<Integer> edge : edges) {
-                int nextDistance = edge.get(0);
-                int nextTarget = edge.get(1);
+            List<int[]> edges = graph.get(b);
+            for(int[] edge : edges) {
+                int nB = edge[0];
+                int nC = edge[1];
 
-                if (distance + nextDistance < dist[nextTarget]) {
-                    dist[nextTarget] = distance + nextDistance;
-                    q.offer(List.of(dist[nextTarget], nextTarget));
+                if(c + nC < dist[nB]) {
+                    dist[nB] = c + nC;
+                    queue.offer(new int[]{nB, dist[nB]});
                 }
             }
         }
-
-        return dist[end];
     }
-
 }
-
