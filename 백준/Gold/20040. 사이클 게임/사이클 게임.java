@@ -15,6 +15,9 @@ public class Main {
     public static void union(int a, int b) {
         int aP = find(a);
         int bP = find(b);
+        
+        if(aP == bP)
+            return;
 
         if(aP < bP)
             parent[bP] = aP;
