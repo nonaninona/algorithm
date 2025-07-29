@@ -6,6 +6,9 @@ public class Main {
     static int[][] board = new int[9][9];
     static List<int[]> dots = new ArrayList<>();
     static StringBuilder builder = new StringBuilder();
+    static boolean[][] row = new boolean[9][9];
+    static boolean[][] column = new boolean[9][9];
+    static boolean[][][] grid = new boolean[9][3][3];
 
     public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -15,13 +18,17 @@ public class Main {
             st = new StringTokenizer(br.readLine());
             for(int j=0;j<9;j++) {
                board[i][j] = Integer.parseInt(st.nextToken());
-               if(board[i][j] == 0)
+               int num = board[i][j];
+               if(num == 0)
                    dots.add(new int[]{i, j});
+               else {
+                   row[num-1][i] = true;
+                   column[num-1][j] = true;
+                   grid[num-1][i/3][j/3] = true;
+               }
             }
         }
 
-//        for(int i=0;i<dots.size();i++)
-//            System.out.println(Arrays.toString(dots.get(i)));
         dfs(0);
     }
 
@@ -41,34 +48,21 @@ public class Main {
 
         for(int num=1;num<10;num++) {
             boolean isPossible = isPossible(y, x, num);
-//            System.out.println(y + " " + x + " " + num + " " + isPossible);
             if (isPossible) {
                 board[y][x] = num;
+                row[num-1][y] = true;
+                column[num-1][x] = true;
+                grid[num-1][y/3][x/3] = true;
                 dfs(depth+1);
                 board[y][x] = 0;
+                row[num-1][y] = false;
+                column[num-1][x] = false;
+                grid[num-1][y/3][x/3] = false;
             }
         }
     }
 
     private static boolean isPossible(int y, int x, int num) {
-        for(int i=0;i<9;i++) {
-            if(board[i][x] == num)
-                return false;
-        }
-
-        for(int i=0;i<9;i++) {
-            if(board[y][i] == num)
-                return false;
-        }
-        int iStart = y/3*3;
-        int jStart = x/3*3;
-        for(int i=iStart;i<iStart+3;i++) {
-            for(int j=jStart;j<jStart+3;j++) {
-                if(board[i][j] == num)
-                    return false;
-            }
-        }
-
-        return true;
+        return !(row[num-1][y] || column[num-1][x] || grid[num-1][y/3][x/3]);
     }
 }
