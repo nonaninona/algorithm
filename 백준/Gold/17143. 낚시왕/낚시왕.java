@@ -92,30 +92,55 @@ public class Main {
 
             int ny = y;
             int nx = x;
-            if (d == 0 || d == 1) {
-                s %= (2 * R - 2);
-                while (s > 0) {
-                    if (ny == R - 1)
-                        d = 0;
-                    else if (ny == 0)
-                        d = 1;
+            int rowCycle = 2*R-2;
+            int columnCycle = 2*C-2;
+            if (d == 0) {
+                s %= rowCycle;
+                int pos = (y-s)%rowCycle;
+                if(pos < 0)
+                    pos += rowCycle;
 
-                    ny += Dy[d];
-                    s--;
+                if(pos <= R-1) {
+                    ny = pos;
                 }
-            } else if (d == 2 || d == 3) {
-                s %= (2 * C - 2);
-                while (s > 0) {
-                    if (nx == C - 1)
-                        d = 3;
-                    else if (nx == 0)
-                        d = 2;
+                else {
+                    d = 1;
+                    ny = rowCycle - pos;
+                }
+            } else if(d == 1) {
+                s %= rowCycle;
+                int pos = (y+s)%rowCycle;
+                if(pos <= R-1) {
+                    ny = pos;
+                }
+                else {
+                    d = 0;
+                    ny = rowCycle - pos;
+                }
+            } else if (d == 2) {
+                s %= columnCycle;
+                int pos = (x+s)%columnCycle;
+                if(pos <= C-1) {
+                    nx = pos;
+                }
+                else {
+                    d = 3;
+                    nx = columnCycle - pos;
+                }
+            } else if(d == 3) {
+                s %= columnCycle;
+                int pos = (x-s)%columnCycle;
+                if(pos < 0)
+                    pos += columnCycle;
 
-                    nx += Dx[d];
-                    s--;
+                if(pos <= C-1) {
+                    nx = pos;
+                }
+                else {
+                    d = 2;
+                    nx = columnCycle - pos;
                 }
             }
-
 //            System.out.println(y + " " + x);
 
             shark[0] = ny;
