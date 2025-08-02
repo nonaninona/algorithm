@@ -100,7 +100,7 @@ public class Main {
                 if(pos < 0)
                     pos += rowCycle;
 
-                if(pos <= R-1) {
+                if(pos < R-1) {
                     ny = pos;
                 }
                 else {
@@ -110,7 +110,7 @@ public class Main {
             } else if(d == 1) {
                 s %= rowCycle;
                 int pos = (y+s)%rowCycle;
-                if(pos <= R-1) {
+                if(pos < R-1) {
                     ny = pos;
                 }
                 else {
@@ -120,7 +120,7 @@ public class Main {
             } else if (d == 2) {
                 s %= columnCycle;
                 int pos = (x+s)%columnCycle;
-                if(pos <= C-1) {
+                if(pos < C-1) {
                     nx = pos;
                 }
                 else {
@@ -133,7 +133,7 @@ public class Main {
                 if(pos < 0)
                     pos += columnCycle;
 
-                if(pos <= C-1) {
+                if(pos < C-1) {
                     nx = pos;
                 }
                 else {
