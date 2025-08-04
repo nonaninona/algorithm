@@ -63,13 +63,16 @@ public class Solution {
         }
 
         String oper = tree[n].operator;
-        boolean ret = true;
+        if(left == -1 || right == -1)
+            return false;
         if(left != -1)
-            ret &= dfs(left);
+            if(!dfs(left))
+                return false;
         if(right != -1)
-            ret &= dfs(right);
+            if(!dfs(right))
+                return false;
 
 //        System.out.println(n + " " + ret);
-        return ret;
+        return true;
     }
 }
