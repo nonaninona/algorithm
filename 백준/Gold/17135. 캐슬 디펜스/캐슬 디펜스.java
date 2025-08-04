@@ -27,22 +27,22 @@ public class Main {
         V = new boolean[M];
         B = new int[3];
         ans = 0;
-        perm(0);
+        perm(0, 0);
         System.out.println(ans);
     }
 
-    public static void perm(int depth) {
+    public static void perm(int depth, int start) {
         if (depth == 3) {
 //            System.out.println(Arrays.toString(B));
             ans = Math.max(ans, calc());
             return;
         }
 
-        for (int i = 0; i < M; i++) {
+        for (int i = start; i < M; i++) {
             if (V[i]) continue;
             B[depth] = i;
             V[i] = true;
-            perm(depth + 1);
+            perm(depth + 1, i+1);
             V[i] = false;
         }
 
