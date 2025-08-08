@@ -5,7 +5,8 @@ public class Solution {
 
     static int TC, N, L;
     static int[] T, K;
-    static int[][] dp;
+    static int R, ret;
+    static int[] B;
 
     public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -27,18 +28,35 @@ public class Solution {
                 K[i] = Integer.parseInt(st.nextToken());
             }
 
-            dp = new int[N+1][L];
-            for(int i=1;i<N+1;i++) {
-                for(int j=0;j<L;j++) {
-                    if(j-K[i-1] < 0)
-                        dp[i][j] = dp[i-1][j];
-                    else
-                        dp[i][j] = Math.max(dp[i-1][j], dp[i-1][j-K[i-1]] + T[i-1]);
-                }
-            }
+            ret = 0;
+            B = new int[N];
+            for(R=1;R<N+1;R++) 
+                comb(0, 0);
 
-            System.out.printf("#%d %d\n", tc, dp[N][L-1]);
+            System.out.printf("#%d %d\n", tc, ret);
         }
 
     }
+
+    private static void comb(int depth, int start) {
+        if(depth == R) {
+//            System.out.println(Arrays.toString(B));
+            int v = 0, c = 0;
+            for(int i=0;i<R;i++) {
+                v += T[B[i]];
+                c += K[B[i]];
+            }
+            if(c <= L)
+                ret = Math.max(ret, v);
+//            System.out.println(v + " " + c);
+            return;
+        }
+
+        for(int i=start;i<N;i++) {
+            B[depth] = i;
+            comb(depth+1, i+1);
+        }
+    }
+
+
 }
