@@ -3,49 +3,64 @@ import java.util.*;
 
 public class Solution {
 
-    static int ret;
-    static int T, N;
-
     public static void main(String[] args) throws Exception {
+        int T, N;
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringBuilder builder = new StringBuilder();
         T = Integer.parseInt(br.readLine());
 
         StringTokenizer st;
-        for(int tc=1;tc<=T;tc++) {
-            int[] W;
-            boolean[] V;
-
+        for (int tc = 1; tc <= T; tc++) {
             N = Integer.parseInt(br.readLine());
+
+            int[] W;
             W = new int[N];
             st = new StringTokenizer(br.readLine());
-            for(int i=0;i<N;i++)
+            for (int i = 0; i < N; i++)
                 W[i] = Integer.parseInt(st.nextToken());
-            V = new boolean[N];
+            
+            int totalW = 0;
+            for (int i = 0; i < N; i++)
+                totalW += W[i];
 
-            ret = 0;
-            perm(0, 0, 0, W, V);
+            int[][] dp;
+            dp = new int[1 << N][totalW + 1];
 
-            System.out.printf("#%d %d\n", tc, ret);
+            for (int i = 0; i < (1 << N); i++)
+                Arrays.fill(dp[i], -1);
+
+            builder.append("#").append(tc).append(" ").append(dfs(0,0, N, dp, W)).append("\n");
         }
+        System.out.print(builder);
     }
 
-    private static void perm(int depth, int left, int right, int[] W, boolean[] V) {
-//        System.out.println(depth);
-        if(depth == N) {
-            ret++;
-            return;
+    private static int dfs(int mask, int leftSum, int N, int[][] dp, int[] W) {
+        if (mask == (1 << N) - 1) {
+            return 1;
         }
 
-        for(int i=0;i<N;i++) {
-            if(V[i]) continue;
+        if (dp[mask][leftSum] != -1)
+            return dp[mask][leftSum];
 
-            V[i] = true;
-            perm(depth+1, left+W[i], right, W, V);
-
-            if(left >= right + W[i]) {
-                perm(depth+1, left, right+W[i], W, V);
+        int sum = 0;
+        for (int i = 0; i < N; i++) {
+            if ((mask & (1 << i)) != 0) {
+                sum += W[i];
             }
-            V[i] = false;
         }
+        int rightSum = sum - leftSum;
+
+        int cnt = 0;
+        for (int i = 0; i < N; i++) {
+            if ((mask & (1 << i)) == 0) {
+                cnt += dfs(mask | (1 << i), leftSum + W[i], N, dp, W);
+
+                if (leftSum >= rightSum + W[i]) {
+                    cnt += dfs(mask | (1 << i), leftSum, N, dp, W);
+                }
+            }
+        }
+
+        return dp[mask][leftSum] = cnt;
     }
 }
