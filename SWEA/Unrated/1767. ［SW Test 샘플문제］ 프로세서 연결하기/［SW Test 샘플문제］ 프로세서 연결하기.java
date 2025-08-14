@@ -43,6 +43,8 @@ public class Solution {
     static int[] Dx = {0, 1, 0, -1};
 
     private static void dfs(int depth) {
+        if(cores.size() - depth + c < maxC)
+            return;
 //        System.out.println(depth);
         if (depth == cores.size()) {
 //            System.out.println(cnt);
@@ -71,7 +73,7 @@ public class Solution {
             deleteLine(y, x, Dy[i], Dx[i]);
             c--;
         }
-        
+
         dfs(depth+1);
     }
 
