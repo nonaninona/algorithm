@@ -5,9 +5,9 @@ class Main {
 
     static int N, M;
     static int[] oils;;
-    static PriorityQueue<int[]> Q;
+    static PriorityQueue<long[]> Q;
     static List<int[]>[] G;
-    static int[][] D;
+    static long[][] D;
 
     public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -35,21 +35,21 @@ class Main {
             G[e].add(new int[] { s, w });
         }
 
-        Q = new PriorityQueue<>(Comparator.comparingInt((int[] l) -> l[1]));
-        Q.offer(new int[] { 0, 0, oils[0] });
-        D = new int[N][2500];
+        Q = new PriorityQueue<>(Comparator.comparing((long[] l) -> l[1]));
+        Q.offer(new long[] { 0, 0, oils[0] });
+        D = new long[N][2501];
         for(int i=0;i<N;i++) {
-            for(int j=0;j<2500;j++)
-                D[i][j] = Integer.MAX_VALUE;
+            for(int j=0;j<2501;j++)
+                D[i][j] = Long.MAX_VALUE;
         }
         D[0][oils[0]] = 0;
 
         while(!Q.isEmpty()) {
-            int[] node = Q.poll();
+            long[] node = Q.poll();
 //            System.out.println(Arrays.toString(node));
-            int n = node[0];
-            int d = node[1];
-            int o = node[2];
+            int n = (int)node[0];
+            long d = node[1];
+            int o = (int)node[2];
 
             if(D[n][o] < d)
                 continue;
@@ -62,14 +62,14 @@ class Main {
 
                 if(d + nD * o < D[nN][nO]) {
                     D[nN][nO] = d + nD * o;
-                    Q.offer(new int[] { nN, D[nN][nO], nO });
+                    Q.offer(new long[] { nN, D[nN][nO], nO });
                 }
             }
         }
 
-        int min = Integer.MAX_VALUE;
-        for(int i=0;i<N;i++)
-            min = Math.min(min, oils[i]);
-        System.out.println(D[N-1][min]);
+        long min = Long.MAX_VALUE;
+        for(int i=0;i<2501;i++)
+            min = Math.min(min, D[N-1][i]);
+        System.out.println(min);
     }
 }
