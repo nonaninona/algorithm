@@ -7,24 +7,26 @@ public class Solution {
     static long N;
     static Queue<long[]> Q;
     static long[] nums;
+    static Set<Long> S;
 
     public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         T = Integer.parseInt(br.readLine());
         nums = new long[1000000];
-        for(long i=1;i<=1000000;i++)
-            nums[(int) i-1] = i*i;
+        for (long i = 1; i <= 1000000; i++)
+            nums[(int) i - 1] = i * i;
         for (int tc = 1; tc <= T; tc++) {
             N = Long.parseLong(br.readLine());
             Q = new ArrayDeque<>();
 
+            S = new HashSet<>();
             long ans = bfs();
             System.out.printf("#%d %d\n", tc, ans);
         }
     }
 
     public static long bfs() {
-        if(N == 2)
+        if (N == 2)
             return 0;
 
         Q.offer(new long[]{N, 0});
@@ -38,17 +40,31 @@ public class Solution {
             if (nextN == 2) {
                 return cnt + diff;
             } else {
-                Q.offer(new long[]{nextN, cnt + diff});
+                if (nextN <= 1_000_000) {
+                    if (!S.contains(nextN)) {
+                        Q.offer(new long[]{nextN, cnt + diff});
+                        S.add(nextN);
+                    }
+                } else {
+                    Q.offer(new long[]{nextN, cnt + diff});
+                }
             }
 
             double sqrt = Math.sqrt(node[0]);
-            if(sqrt != (int) sqrt)
+            if (sqrt != (int) sqrt)
                 continue;
             nextN = (int) sqrt;
-            if(nextN == 2) {
+            if (nextN == 2) {
                 return cnt + 1;
             } else {
-                Q.offer(new long[]{ nextN, cnt+1 });
+                if (nextN <= 1_000_000) {
+                    if (!S.contains(nextN)) {
+                        Q.offer(new long[]{nextN, cnt + 1});
+                        S.add(nextN);
+                    }
+                } else {
+                    Q.offer(new long[]{nextN, cnt + 1});
+                }
             }
         }
 
@@ -59,11 +75,11 @@ public class Solution {
 
         int lo = -1;
         int hi = 1000000;
-        while(lo + 1 < hi) {
+        while (lo + 1 < hi) {
 //            System.out.println(lo + " " + hi);
-            int mid = (lo+hi) / 2;
+            int mid = (lo + hi) / 2;
             // v[i-1] < k <= v[i]
-            if(!(n <= nums[mid]))
+            if (!(n <= nums[mid]))
                 lo = mid;
             else
                 hi = mid;
