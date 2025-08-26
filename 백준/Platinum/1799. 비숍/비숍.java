@@ -5,8 +5,8 @@ public class Main {
 
     static int N;
     static int[][] board;
-    static int ret, cnt;
-    static boolean[] diag, rDiag; // / \
+    static int ret;
+    static boolean[] rDiag; // / \
 
     public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -21,82 +21,48 @@ public class Main {
             }
         }
 
-        ret = 0; cnt = 0;
-        diag = new boolean[2*N-1];
+        ret = 0;
         rDiag = new boolean[2*N-1];
-        dfs(0);
-        System.out.println(ret);
+        dfs(0, 0);
+
+        int ans = ret;
+
+        ret = 0;
+        rDiag = new boolean[2*N-1];
+        dfs(1, 0);
+
+        ans += ret;
+        System.out.println(ans);
     }
 
-    private static void dfs(int depth) {
-        if(cnt + 2*N - depth < ret)
-            return;
+    private static void dfs(int depth, int cnt) {
+        if(depth%2 == 0)
+            if(cnt + (N - depth/2) < ret)
+                return;
+        else
+            if(cnt + (N-1 - depth/2) < ret)
+                return;
 //        System.out.println(Arrays.toString(diag));
 //        System.out.println(Arrays.toString(rDiag));
 //        System.out.println();
 
-        if(depth == 2*N) {
+        if(depth >= 2*N-1) {
             ret = Math.max(ret, cnt);
             return;
         }
 
-        boolean notPlaced = true;
-        if(depth < N) {
-            int y = 0;
-            int x = depth;
-            for (int i = 0; i < depth+1; i++) {
-                if(board[y][x] == 1 && !diag[y+x] && !rDiag[x-y+N-1]) {
-                    notPlaced = false;
 
-                    cnt++;
-                    diag[y+x] = true;
-                    rDiag[x-y+N-1] = true;
-                    dfs(depth+1);
-                    diag[y+x] = false;
-                    rDiag[x-y+N-1] = false;
-                    cnt--;
-                }
-                y++;
-                x--;
-            }
-        } else {
-            int y = N-1;
-            int x = depth-N+1;
-            for(int i=0;i<N-1-(depth-N);i++) {
-                if(board[y][x] == 1 && !diag[y+x] && !rDiag[x-y+N-1]) {
-                    notPlaced = false;
+        int yStart = Math.max(0, depth-(N-1));
+        int yEnd = Math.min(depth, N-1);
 
-                    cnt++;
-                    diag[y+x] = true;
-                    rDiag[x-y+N-1] = true;
-                    dfs(depth+1);
-                    diag[y+x] = false;
-                    rDiag[x-y+N-1] = false;
-                    cnt--;
-                }
-                y--;
-                x++;
+        for(int y=yStart;y<=yEnd;y++) {
+            int x = depth - y;
+            if(board[y][x] == 1 && !rDiag[x-y+N-1]) {
+                rDiag[x-y+N-1] = true;
+                dfs(depth+2, cnt+1);
+                rDiag[x-y+N-1] = false;
             }
         }
-        if(notPlaced)
-            dfs(depth+1);
-
-    }
-
-    static int[] Dy = { -1, -1, 1, 1 };
-    static int[] Dx = { -1, 1, -1, 1 };
-    private static boolean isPossible(int y, int x) {
-        for(int i=0;i<4;i++) {
-            int ny = y + Dy[i], nx = x + Dx[i];
-            while(!(ny < 0 || nx < 0 || ny >= N || nx >= N)) {
-                if(board[ny][nx] == 2)
-                    return false;
-
-                ny += Dy[i];
-                nx += Dx[i];
-            }
-        }
-
-        return true;
+        dfs(depth+2, cnt);
     }
 }
