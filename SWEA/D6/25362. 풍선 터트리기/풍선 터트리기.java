@@ -10,22 +10,20 @@ public class Solution {
     public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st;
-        B = new int[22];
+        B = new int[20];
 
         T = Integer.parseInt(br.readLine());
         for (int tc = 1; tc <= T; tc++) {
             N = Integer.parseInt(br.readLine());
 
             st = new StringTokenizer(br.readLine());
-            for (int i = 1; i <= N; i++)
+            for (int i = 0; i < N; i++)
                 B[i] = Integer.parseInt(st.nextToken());
-            B[0] = 1;
-            B[N+1] = 1;
 
-            dp = new int[N+2][N+2];
-            for(int i=0;i<N+2;i++)
+            dp = new int[N][N];
+            for(int i=0;i<N;i++)
                 Arrays.fill(dp[i], -1);
-            int ans = dfs(1, N);
+            int ans = dfs(0, N-1);
 
             System.out.printf("#%d %d\n", tc, ans);
         }
@@ -40,8 +38,12 @@ public class Solution {
         int ret = 0;
         for(int i=s;i<=e;i++) {
             int score = 0;
-            if(s == 1 && e == N)
+            if(s == 0 && e == N-1)
                 score += B[i];
+            else if(s == 0 && e != N-1)
+                score += B[e+1];
+            else if(s != 0 && e == N-1)
+                score += B[s-1];
             else
                 score += B[s-1] * B[e+1];
             ret = Math.max(ret, score + dfs(s, i - 1) + dfs(i + 1, e));
