@@ -6,6 +6,7 @@ public class Main {
     static String T, P;
     static int[] pi;
     static List<Integer> ans;
+    static StringBuilder sb = new StringBuilder();
 
     public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -16,10 +17,11 @@ public class Main {
         getPi();
         getAns();
 
-        System.out.println(ans.size());
+        sb.append(ans.size()).append("\n");
         for(int a : ans) {
-            System.out.print((a+1) + " ");
+            sb.append(a+1).append(" ");
         }
+        System.out.println(sb);
     }
 
     private static void getAns() {
