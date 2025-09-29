@@ -1,4 +1,8 @@
 def solution(my_string, s, e):
-    S = my_string 
-    return S[:s]+S[s:e+1][::-1]+S[e+1:]
+    answer = ''
+    S = my_string[s:e:-1]
+    print(S)
+    answer = my_string[:s] + S + my_string[e:]
     
+    print(answer)
+    return answer
