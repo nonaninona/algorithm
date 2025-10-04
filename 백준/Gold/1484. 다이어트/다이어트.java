@@ -12,17 +12,12 @@ class Main {
         G = Integer.parseInt(br.readLine());
 
         int left = 1;
-        int diff = -1;
-        for(int right = 1; right<100_000;right++) {
-            diff = right*right - left*left;
-
-            while(left < right && diff > G) {
+        for(int right = 1; right<(G+1)/2+1;right++) {
+            while(left < right && right*right - left*left > G) {
                 left++;
-                diff = right*right - left*left;
             }
 
-            diff = right*right - left*left;
-            if(diff == G)
+            if(right*right - left*left == G)
                 ans.add(right);
         }
 
