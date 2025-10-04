@@ -11,21 +11,27 @@ class Main {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         G = Integer.parseInt(br.readLine());
 
-        int left = 1;
-        for(int right = 1; right<(G+1)/2+1;right++) {
-            while(left < right && right*right - left*left > G) {
-                left++;
-            }
+        for(int r=1;r<Math.sqrt(G);r++) {
+            if(G%r==0) {
+                int p = G/r;
+                int A = Math.min(r, p);
+                int B = Math.max(r, p);
+                //A = new - old, B = new + old
 
-            if(right*right - left*left == G)
-                ans.add(right);
+                if(A%2 == B%2) {
+                    int now = (A+B) / 2;
+                    ans.add(now);
+                }
+            }
         }
 
         if(ans.isEmpty()) {
             System.out.println(-1);
         } else {
-            for(int a : ans)
+            ans.sort(Comparator.naturalOrder());
+            for(int a : ans) {
                 sb.append(a).append("\n");
+            }
             System.out.print(sb);
         }
 
