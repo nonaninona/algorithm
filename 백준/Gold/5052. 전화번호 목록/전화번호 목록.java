@@ -6,32 +6,6 @@ class Main {
     static int T, N;
     static String[] numbers;
 
-    static class Node {
-        boolean isEnd = false;
-        Node[] children = new Node[10];
-    }
-
-    public static boolean insert(Node root, String num) {
-        boolean ret = false;
-
-        Node cur = root;
-        for(int i=0;i<num.length();i++) {
-            if(cur.isEnd)
-                ret = true;
-            char c = num.charAt(i);
-            if(cur.children[c-'0'] == null) {
-                Node next = new Node();
-                cur.children[c-'0'] = next;
-                cur = next;
-            } else {
-                cur = cur.children[c - '0'];
-            }
-        }
-        cur.isEnd = true;
-
-        return ret;
-    }
-
     public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         T = Integer.parseInt(br.readLine());
@@ -43,10 +17,9 @@ class Main {
                 numbers[i] = br.readLine();
             Arrays.sort(numbers);
 
-            Node root = new Node();
             boolean ret = false;
-            for(String num : numbers) {
-                if(insert(root, num)) {
+            for(int i=0;i<N-1;i++) {
+                if(compare(numbers[i], numbers[i+1])) {
                     ret = true;
                     break;
                 }
@@ -58,4 +31,14 @@ class Main {
                 System.out.println("YES");
         }
     }
+
+    public static boolean compare(String n1, String n2) {
+        for(int i=0;i<Math.min(n1.length(), n2.length());i++) {
+            if(n1.charAt(i) != n2.charAt(i))
+                return false;
+        }
+        return true;
+    }
+
+
 }
