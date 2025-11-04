@@ -6,7 +6,7 @@ class Main {
     static int[][] B;
     static boolean[][][] V;
     static int N;
-    static PriorityQueue<int[]> Q;
+    static Deque<int[]> Q;
 
     static int[] Dy = {-1, 0, 1, 0};
     static int[] Dx = {0, 1, 0, -1};
@@ -31,8 +31,8 @@ class Main {
 
         int ans = -1;
 
-        V = new boolean[bCount+1][N][N];
-        Q = new PriorityQueue<>(Comparator.comparing((int[] l) -> l[0]));
+        V = new boolean[bCount + 1][N][N];
+        Q = new ArrayDeque<>();
         Q.offer(new int[]{0, 0, 0}); // 횟수, y, x
         while (!Q.isEmpty()) {
             int[] node = Q.poll();
@@ -40,10 +40,10 @@ class Main {
             int y = node[1];
             int x = node[2];
 
-            if(V[c][y][x])
+            if (V[c][y][x])
                 continue;
 
-            if(y == N-1 && x == N-1) {
+            if (y == N - 1 && x == N - 1) {
                 ans = c;
                 break;
             }
@@ -53,22 +53,28 @@ class Main {
             int ny = -1;
             int nx = -1;
             int nc = -1;
-            for(int i=0;i<4;i++) {
-                ny = y+Dy[i];
-                nx = x+Dx[i];
+            for (int i = 0; i < 4; i++) {
+                ny = y + Dy[i];
+                nx = x + Dx[i];
                 nc = c;
 
-                if(ny < 0 || nx < 0 || ny >= N || nx >= N)
+                if (ny < 0 || nx < 0 || ny >= N || nx >= N)
                     continue;
 
-                if(B[ny][nx] == 0) {
-                    nc = c+1;
+                boolean isZero = true;
+                if (B[ny][nx] == 0) {
+                    nc = c + 1;
+                    isZero = false;
                 }
 
-                if(V[nc][ny][nx])
+                if (V[nc][ny][nx])
                     continue;
 
-                Q.offer(new int[]{nc, ny, nx});
+
+                if (isZero)
+                    Q.offerFirst(new int[]{nc, ny, nx});
+                else
+                    Q.offerLast(new int[]{nc, ny, nx});
             }
         }
 
