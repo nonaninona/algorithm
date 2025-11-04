@@ -5,7 +5,7 @@ public class Main {
 
     static int N, M;
     static int[] W;
-    static Set<Integer>[] S;
+    static boolean[][] dp;
     static StringBuilder sb = new StringBuilder();
 
     public static void main(String[] args) throws Exception {
@@ -13,28 +13,35 @@ public class Main {
         StringTokenizer st;
 
         N = Integer.parseInt(br.readLine());
-
         W = new int[N];
         st = new StringTokenizer(br.readLine());
         for(int i=0;i<N;i++) {
             W[i] = Integer.parseInt(st.nextToken());
         }
 
-        S = new Set[N+1];
-        for(int i=0;i<N+1;i++)
-            S[i] = new HashSet<>();
-
-        dfs(0, 0);
-
+        dp = new boolean[N+1][40001];
+        dp[0][0] = true;
+        for(int i=0;i<N;i++) {
+            for(int j=0;j<40001;j++) {
+                if(dp[i][j]) {
+                    if(j+W[i] <= 40000)
+                        dp[i+1][j+W[i]] = true;
+                    dp[i+1][Math.abs(j-W[i])] = true;
+                    dp[i+1][j] = true;
+                }
+            }
+        }
 //        for(int i=0;i<N+1;i++) {
-//            System.out.println(S[i]);
+//            for(int j=0;j<100;j++)
+//                System.out.print(dp[i][j] + " ");
+//            System.out.println();
 //        }
 
         M = Integer.parseInt(br.readLine());
         st = new StringTokenizer(br.readLine());
         for(int i=0;i<M;i++) {
             int query = Integer.parseInt(st.nextToken());
-            if(S[N].contains(query))
+            if(dp[N][query])
                 sb.append("Y");
             else
                 sb.append("N");
@@ -43,22 +50,5 @@ public class Main {
 
         System.out.println(sb);
 
-    }
-
-    private static void dfs(int pos, int weight) {
-        if(weight + 500 * (N-pos) < 0 || weight - 500 * (N-pos) > 40_000)
-            return;
-
-        if(S[pos].contains(weight))
-            return;
-
-        S[pos].add(weight);
-
-        if(pos == N)
-            return;
-
-        dfs(pos+1, weight);
-        dfs(pos+1, weight+W[pos]);
-        dfs(pos+1, weight-W[pos]);
     }
 }
