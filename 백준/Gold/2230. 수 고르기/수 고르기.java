@@ -23,7 +23,7 @@ class Main {
         ans = Integer.MAX_VALUE;
         int right = 0;
         int left = 0;
-        while(right < N && left < N) {
+        while(left <= right && right < N) {
             int diff = A[right] - A[left];
             if(diff < M)
                 right++;
