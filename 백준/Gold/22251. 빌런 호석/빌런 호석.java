@@ -4,6 +4,7 @@ import java.util.*;
 class Main {
 
     static boolean[][] nums;
+    static int[][] diffs;
     static int N, K, P, X;
     static int ans;
     static String numStr;
@@ -20,6 +21,8 @@ class Main {
         nums[7] = new boolean[] { true, false, true, false, false, true, false };
         nums[8] = new boolean[] { true, true, true, true, true, true, true };
         nums[9] = new boolean[] { true, true, true, true, false, true, true };
+        diffs = new int[10][10];
+        calcDiff();
 
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
@@ -53,12 +56,20 @@ class Main {
         for(int i=0;i<=9;i++) {
             if(i == cur)
                 continue;
-            int diff = getDiff(i, cur);
+            int diff = diffs[i][cur];
 
             if(p >= diff)
                 dfs(depth+1, p-diff, numString+i);
         }
         dfs(depth+1, p, numString+cur);
+    }
+
+    private static void calcDiff() {
+        for(int i=0;i<10;i++) {
+            for(int j=i+1;j<10;j++) {
+                diffs[i][j] = diffs[j][i] = getDiff(i, j);
+            }
+        }
     }
 
     private static int getDiff(int num1, int num2) {
