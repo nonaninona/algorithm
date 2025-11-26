@@ -15,6 +15,7 @@ public class Main {
     static int[] Dy = {-1, 0, 1, 0};
     static int[] Dx = {0, 1, 0, -1};
     static int d = 1;
+    static int[][] dp;
 
     public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -25,11 +26,13 @@ public class Main {
         K = Integer.parseInt(st.nextToken());
 
         B = new int[N][M];
+        dp = new int[N][M];
         for (int i = 0; i < N; i++) {
             st = new StringTokenizer(br.readLine());
             for (int j = 0; j < M; j++)
                 B[i][j] = Integer.parseInt(st.nextToken());
         }
+
 
         int y = 0;
         int x = 0;
@@ -117,7 +120,13 @@ public class Main {
         int n = B[y][x];
         V = new boolean[N][M];
         V[y][x] = true;
-        return n * dfs(y, x, n);
+
+        if(dp[y][x] != 0)
+            return n * dp[y][x];
+        int c = dfs(y, x, n);
+
+        setDP(y, x, n, c);
+        return n * c;
     }
 
     private static int dfs(int y, int x, int n) {
@@ -135,5 +144,21 @@ public class Main {
             c += dfs(ny, nx, n);
         }
         return c;
+    }
+
+    private static void setDP(int y, int x, int n, int c) {
+        dp[y][x] = c;
+        for(int i=0;i<4;i++) {
+            int ny = y + Dy[i];
+            int nx = x + Dx[i];
+
+            if(ny < 0 || nx < 0 || ny >= N || nx >= M)
+                continue;
+            if(V[ny][nx] || B[ny][nx] != n)
+                continue;
+            V[ny][nx] = true;
+
+            setDP(ny, nx, n, c);
+        }
     }
 }
