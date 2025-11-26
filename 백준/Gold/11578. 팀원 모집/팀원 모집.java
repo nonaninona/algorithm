@@ -38,6 +38,9 @@ class Main {
     }
 
     private static void dfs(int depth, int state, int cnt) {
+        if(ans <= cnt)
+            return;
+
         if(depth == M) {
             if(state == (1 << N) - 1)
                 ans = Math.min(ans, cnt);
