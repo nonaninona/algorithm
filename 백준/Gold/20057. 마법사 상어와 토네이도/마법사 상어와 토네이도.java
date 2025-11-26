@@ -9,18 +9,8 @@ class Main {
     static int[] percent = { 1, 1, 2, 2, 5, 7, 7, 10, 10 };
 
     // 왼쪽, 아래쪽, 오른쪽, 위쪽
-    static int[][] tDy = {
-            { -1, 1, -2, 2, 0, -1, 1, -1, 1, 0 },
-            { -1, -1, 0, 0, 2, 0, 0, 1, 1, 1 },
-            { -1, 1, -2, 2, 0, -1, 1, -1, 1, 0},
-            { 1, 1, 0, 0, -2, 0, 0,-1, -1, -1}
-    };
-    static int[][] tDx = {
-            { 1, 1, 0, 0, -2, 0, 0, -1, -1, -1 },
-            { -1, 1, -2, 2,  0, -1, 1, -1, 1, 0},
-            { -1, -1, 0, 0, 2, 0, 0, 1, 1, 1},
-            { -1, 1, -2, 2,  0, -1, 1, -1, 1, 0}
-    };
+    static int[][] tDy;
+    static int[][] tDx;
 
     static int[] Dy = { 0, 1, 0, -1 };
     static int[] Dx = { -1, 0, 1, 0 };
@@ -38,6 +28,17 @@ class Main {
             st = new StringTokenizer(br.readLine());
             for (int j = 0; j < N; j++)
                 B[i][j] = Integer.parseInt(st.nextToken());
+        }
+
+        tDy = new int[4][10];
+        tDx = new int[4][10];
+        tDy[0] = new int[] {-1, 1, -2, 2, 0, -1, 1, -1, 1, 0};
+        tDx[0] = new int[] { 1, 1, 0, 0, -2, 0, 0, -1, -1, -1 };
+        for(int i=1;i<4;i++) {
+            for(int j=0;j<10;j++) {
+                tDy[i][j] = -tDx[i-1][j];
+                tDx[i][j] = tDy[i-1][j];
+            }
         }
 
         ans = 0;
