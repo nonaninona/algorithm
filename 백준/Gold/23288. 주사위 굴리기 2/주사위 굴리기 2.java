@@ -125,6 +125,8 @@ public class Main {
             return n * dp[y][x];
         int c = dfs(y, x, n);
 
+        V = new boolean[N][M];
+        V[y][x] = true;
         setDP(y, x, n, c);
         return n * c;
     }
