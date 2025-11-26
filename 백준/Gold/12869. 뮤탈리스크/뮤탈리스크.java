@@ -6,8 +6,7 @@ class Main {
     static int N;
     static int[] health;
     static int ans;
-    static boolean[][][] visited;
-    static Queue<int[]> Q;
+    static int[][][] dp;
     static List<int[]> perms = new ArrayList<>();
     static int[] value = new int[]{9, 3, 1};
 
@@ -15,7 +14,11 @@ class Main {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         N = Integer.parseInt(br.readLine());
 
-        visited = new boolean[61][61][61];
+        dp = new int[61][61][61];
+        for (int i = 0; i < 61; i++)
+            for (int j = 0; j < 61; j++)
+                Arrays.fill(dp[i][j], -1);
+        dp[0][0][0] = 0;
 
         health = new int[4];
         StringTokenizer st = new StringTokenizer(br.readLine());
@@ -23,62 +26,43 @@ class Main {
             health[i] = Integer.parseInt(st.nextToken());
         }
         health[3] = 0;
-
         getPerms();
-//        for(int[] a : perms) {t
-//            System.out.println(Arrays.toString(a));
-//        }
 
-        Q = new ArrayDeque<>();
-        Q.offer(health);
-        visited[health[0]][health[1]][health[2]] = true;
-        while (!Q.isEmpty()) {
-            // 종료 조건
-            int[] curH = Q.poll();
-//            System.out.println(Arrays.toString(curH));
-            if (allDead(curH)) {
-                ans = curH[3];
-                break;
+        dfs(health[0], health[1], health[2]);
+
+        System.out.println(dp[health[0]][health[1]][health[2]]);
+    }
+
+    private static int dfs(int h1, int h2, int h3) {
+        if (dp[h1][h2][h3] != -1)
+            return dp[h1][h2][h3];
+
+        int ret = Integer.MAX_VALUE;
+        for (int[] p : perms) {
+//            System.out.println(Arrays.toString(p));
+            int v1 = 0;
+            int v2 = 0;
+            int v3 = 0;
+            if (N == 1) {
+                v1 = value[p[0]];
+                v2 = 0;
+                v3 = 0;
+            } else if (N == 2) {
+                v1 = value[p[0]];
+                v2 = value[p[1]];
+                v3 = 0;
+            } else if (N == 3) {
+                v1 = value[p[0]];
+                v2 = value[p[1]];
+                v3 = value[p[2]];
             }
 
-            for (int[] p : perms) {
-                int[] nextH = Arrays.copyOf(curH, 4);
-
-                //p = 1 2 0 => 각 인덱스의 피격 순서
-                //pos = 2 0 1 => 순서에 해당하는 숫자의 위치
-//                int[] pos = new int[4];
-//                for (int i = 0; i < N; i++) {
-//                    pos[p[i]] = i;
-//                }
-//                if (N >= 2) {
-//                    if (health[pos[0]] == 0)
-//                        continue;
-//                    //첫번째는 0이 아니어야 함.
-//                }
-//                if (N >= 3) {
-//                    if (health[pos[2]] != 0 && health[pos[1]] == 0)
-//                        continue;
-//                    //3번째가 0이 아니면 2번째도 아니어야 함.
-//                }
-
-                for (int i = 0; i < N; i++) {
-                    nextH[i] = Math.max(0, nextH[i] - value[p[i]]);
-                }
-
-                if(visited[nextH[0]][nextH[1]][nextH[2]]) {
-//                    System.out.println("visited");
-                    continue;
-                }
-
-                visited[nextH[0]][nextH[1]][nextH[2]] = true;
-                nextH[3]++;
-                Q.offer(nextH);
-
-            }
+            ret = Math.min(ret, dfs(Math.max(0, h1 - v1), Math.max(0, h2 - v2), Math.max(0, h3 - v3)));
         }
 
-        System.out.println(ans);
+        return dp[h1][h2][h3] = 1 + ret;
     }
+
 
     static boolean[] V;
     static int[] p;
